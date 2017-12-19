@@ -23,7 +23,7 @@
 {application, erocksdb,
  [
   {description, "RocksDB for Erlang"},
-  {vsn, "5.7.5"},
+  {vsn, "5.9.2"},
   {registered, []},
   {applications, [
                   kernel,
