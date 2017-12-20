@@ -6,7 +6,7 @@ CurrentDir = filename:dirname(SCRIPT).
 
 File = filename:join([CurrentDir, "c_src", "rocksdb", "make_config.mk"]).
 
-Opt = " $(cat " ++ File  ++ " | grep PLATFORM_LDFLAGS | cut -d' ' -f2- | sed -e 's/-lsnappy//')".
+Opt = " $(cat " ++ File  ++ " | grep PLATFORM_LDFLAGS | cut -d' ' -f2- | sed -e 's/-lsnappy//;s/-llz4//')".
 
 Flag = "DRV_LDFLAGS".
 

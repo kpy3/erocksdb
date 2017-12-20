@@ -9,5 +9,6 @@ c_src/rocksdb-*.tar.gz
 c_src/snappy*/
 c_src/snappy*.tar.gz
 c_src/system
+c_src/lz4-*
 *~
 .rebar

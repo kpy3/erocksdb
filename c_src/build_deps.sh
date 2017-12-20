@@ -14,8 +14,8 @@ BASEDIR=$SCRIPTPATH
 BUILD_CONFIG=$BASEDIR/rocksdb/make_config.mk
 
 ROCKSDB_VSN="5.9.2"
-
 SNAPPY_VSN="1.1.4"
+LZ4_VSN="1.8.0"
 
 set -e
 
@@ -36,7 +36,7 @@ MAKE=${MAKE:-make}
 
 case "$1" in
     rm-deps)
-        rm -rf rocksdb system snappy-$SNAPPY_VSN rocksdb-*.tar.gz snappy-*.tar.gz
+        rm -rf rocksdb system snappy-$SNAPPY_VSN lz4-$LZ4_VSN rocksdb-*.tar.gz snappy-*.tar.gz lz4-v$LZ4_VSN.tar.gz
         ;;
 
     clean)
@@ -46,6 +46,9 @@ case "$1" in
         fi
         if [ -d snappy-$SNAPPY_VSN ]; then
             (cd snappy-$SNAPPY_VSN && $MAKE clean)
+        fi
+        if [ -d lz4-$LZ4_VSN ]; then
+            (cd lz4-$LZ4_VSN && $MAKE clean)
         fi
         ;;
 
@@ -75,6 +78,13 @@ case "$1" in
             curl -L -o $SNAPPYTARGZ $SNAPPYURL
             tar -xzf $SNAPPYTARGZ
         fi
+        if [ ! -d lz4-$LZ4_VSN ]; then
+            LZ4URL="https://github.com/lz4/lz4/archive/v$LZ4_VSN.tar.gz"
+            LZ4TARGZ="lz4-$LZ4_VSN.tar.gz"
+            echo Downloading $LZ4URL...
+            curl -L -o $LZ4TARGZ $LZ4URL
+            tar -xzf $LZ4TARGZ
+        fi
         ;;
 
     *)
@@ -84,6 +94,9 @@ case "$1" in
 		./configure --prefix=$BASEDIR/system --libdir=$BASEDIR/system/lib --with-pic && \
 		$MAKE && \
 		$MAKE install)
+        fi
+        if [ ! -f system/lib/liblz4.a ]; then
+            (cd lz4-$LZ4_VSN/lib && CFLAGS=-fPIC $MAKE lib && $MAKE install PREFIX=$BASEDIR/system)
         fi
 
         export CFLAGS="$CFLAGS -I $BASEDIR/system/include"
